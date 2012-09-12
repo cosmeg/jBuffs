@@ -2,6 +2,7 @@
 ## Author: me
 ## Title: jBuffs
 ## Notes: some buff frames
+## Dependencies: Masque
 
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Always: delayed
