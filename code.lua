@@ -24,10 +24,6 @@ local function StyleButton(self)
   -- TODO fonts, text positioning
 end
 
---- XXX *when* to do this
-StyleButton(_G["ConsolidatedBuffs"])
-
-
 local function UNIT_AURA(self, event, ...)
   if ... ~= PlayerFrame.unit then return end  -- just our buffs
 
@@ -37,11 +33,7 @@ local function UNIT_AURA(self, event, ...)
   while BUFFS_STYLED < BUFF_ACTUAL_DISPLAY do
     BUFFS_STYLED = BUFFS_STYLED + 1
     local button = _G["BuffButton" .. BUFFS_STYLED]
-    if button then
-      StyleButton(button)
-    else
-      print("XXX no button?")
-    end
+    StyleButton(button)
   end
   while DEBUFFS_STYLED < DEBUFF_ACTUAL_DISPLAY do
     DEBUFFS_STYLED = DEBUFFS_STYLED + 1
@@ -51,14 +43,23 @@ local function UNIT_AURA(self, event, ...)
   end
   while ENCHANTS_STYLED < BuffFrame.numEnchants do
     ENCHANTS_STYLED = ENCHANTS_STYLED + 1
-    StyleButton(_G["TempEnchant" .. ENCHANTS_STYLED])
-    _G["TempEnchant" .. ENCHANTS_STYLED .. "Border"]:Hide()
+    local button = _G["TempEnchant" .. ENCHANTS_STYLED]
+    StyleButton(button)
+    button:Hide()
   end
 end
 
 local frame = CreateFrame("FRAME")
 frame:RegisterEvent("UNIT_AURA")
 frame:SetScript("OnEvent", UNIT_AURA)
+
+
+--- Style consolidated buff frame when it shows.
+-- XXX also apparently this messes with the icon somehow
+hooksecurefunc("ConsolidatedBuffs_OnShow", function (...)
+  StyleButton(_G["ConsolidatedBuffs"])
+end)
+
 
 -- bootstrap
 UNIT_AURA(nil, "UNIT_AURA", PlayerFrame.unit)
