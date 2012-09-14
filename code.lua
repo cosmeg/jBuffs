@@ -1,39 +1,44 @@
-BUFFS_PER_ROW = 32;
+-- addon globals
+local BUFFS_STYLED = 0
+local DEBUFFS_STYLED = 0
 
+
+BUFFS_PER_ROW = 32
+
+-- move buff frame to the right of the screen
 BuffFrame:ClearAllPoints()
 BuffFrame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -13, -13)
---XXX these points will be wrong; does this frame even exist?
+--XXX these points are probably wrong
+--XXX does this frame even exist?
 DebuffFrame:ClearAllPoints()
 DebuffFrame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -13, -113)
---XXX
+
+--XXX this may need to be set per-icon?
 DebuffFrame:SetScale(2.0)
 
 local MSQ = LibStub("Masque")
+local masqueGroup = MSQ:Group("jBuffs", "buffs")
 
-local masqueBuffGroup = MSQ:Group("jBuffs", "buffs")
--- TODO remove this after the OnLoad code runs early enough (below too)
-for i = 1, BUFF_MAX_DISPLAY do
-  masqueBuffGroup:AddButton(_G["BuffButton" .. i])
+local function UnitAura(self, event, ...)
+  local unit = ...;
+  if unit ~= PlayerFrame.unit then return end
+
+  while BUFFS_STYLED < BUFF_ACTUAL_DISPLAY do
+    BUFFS_STYLED = BUFFS_STYLED + 1
+    masqueGroup:AddButton(_G["BuffFrame" .. BUFFS_STYLED])
+  end
+  while DEBUFFS_STYLED < DEBUFF_ACTUAL_DISPLAY do
+    DEBUFFS_STYLED = DEBUFFS_STYLED + 1
+    masqueGroup:AddButton(_G["DebuffFrame" .. DEBUFFS_STYLED])
+  end
 end
 
--- XXX this does not handle debuffs arg
-oldBB_OL = BuffButton_OnLoad
-function JBuffs_BuffButton_OnLoad(self)
-  oldBB_OL(self)
-  masqueBuffGroup:AddButton(self)
-end
-BuffButton_OnLoad = JBuffs_BuffButton_OnLoad
+local frame = CreateFrame("FRAME")
+frame:RegisterEvent("UNIT_AURA")
+frame:SetScript("OnEvent", UnitAura)
 
 
---[[
--- TODO debuffs - see that this works
--- XXX factor out some of this duplicated code?
-local masqueDebuffGroup = MSQ:Group("jBuffs", "debuffs")
-for i = 1, DEBUFF_MAX_DISPLAY do
-  masqueDebuffGroup:AddButton(_G["DebuffButton" .. i])
-end
---]]
-
+-- TODO add weapon buffs to the above, unless disabling the border matters
 local masqueWeaponBuffGroup = MSQ:Group("jBuffs", "weapon buffs")
 masqueWeaponBuffGroup:AddButton(TempEnchant1)
 masqueWeaponBuffGroup:AddButton(TempEnchant2)
