@@ -13,11 +13,6 @@ BuffFrame:ClearAllPoints()
 BuffFrame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -13, -13)
 
 
---- Make debuffs larger.
--- TODO this may need to be set per-icon?
---DebuffFrame:SetScale(2.0)
-
-
 --- Style buffs as they are created.
 -- This technique will get new as well as existing buffs.
 local MSQ = LibStub("Masque")
@@ -47,12 +42,14 @@ local function UNIT_AURA(self, event, ...)
   end
   while DEBUFFS_STYLED < DEBUFF_ACTUAL_DISPLAY do
     DEBUFFS_STYLED = DEBUFFS_STYLED + 1
-    StyleButton(_G["DebuffButton" .. DEBUFFS_STYLED])
+    local button = _G["DebuffButton" .. DEBUFFS_STYLED]
+    StyleButton(button)
+    button:SetScale(2.0)
   end
   while ENCHANTS_STYLED < BuffFrame.numEnchants do
     ENCHANTS_STYLED = ENCHANTS_STYLED + 1
     StyleButton(_G["TempEnchant" .. ENCHANTS_STYLED])
-    -- XXX what is the stupid white border around these?
+    _G["TempEnchant" .. ENCHANTS_STYLED .. "Border"]:Hide()
   end
 end
 
