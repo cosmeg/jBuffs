@@ -24,6 +24,10 @@ local function StyleButton(self)
   -- TODO fonts, text positioning
 end
 
+--- XXX *when* to do this
+StyleButton(_G["ConsolidatedBuffs"])
+
+
 local function UNIT_AURA(self, event, ...)
   if ... ~= PlayerFrame.unit then return end  -- just our buffs
 
