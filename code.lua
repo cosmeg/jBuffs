@@ -1,11 +1,14 @@
--- addon globals
+--- Addon Globals
 local BUFFS_STYLED = 0
 local DEBUFFS_STYLED = 0
+local ENCHANTS_STYLED = 0
 
 
+--- More buffs per row.
 BUFFS_PER_ROW = 32
 
--- move buff frame to the right of the screen
+
+--- Move buff frame to the right of the screen.
 BuffFrame:ClearAllPoints()
 BuffFrame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -13, -13)
 --XXX these points are probably wrong
@@ -13,15 +16,19 @@ BuffFrame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -13, -13)
 DebuffFrame:ClearAllPoints()
 DebuffFrame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -13, -113)
 
+
+--- Make debuffs larger.
 --XXX this may need to be set per-icon?
 DebuffFrame:SetScale(2.0)
 
+
+--- Style buffs as they are created.
+-- This technique will get new as well as existing buffs.
 local MSQ = LibStub("Masque")
 local masqueGroup = MSQ:Group("jBuffs", "buffs")
 
-local function UnitAura(self, event, ...)
-  local unit = ...;
-  if unit ~= PlayerFrame.unit then return end
+local function UNIT_AURA(self, event, ...)
+  if ... ~= PlayerFrame.unit then return end
 
   while BUFFS_STYLED < BUFF_ACTUAL_DISPLAY do
     BUFFS_STYLED = BUFFS_STYLED + 1
@@ -31,25 +38,17 @@ local function UnitAura(self, event, ...)
     DEBUFFS_STYLED = DEBUFFS_STYLED + 1
     masqueGroup:AddButton(_G["DebuffFrame" .. DEBUFFS_STYLED])
   end
+  while ENCHANTS_STYLED < BuffFrame.numEnchants do
+    ENCHANTS_STYLED = ENCHANTS_STYLED + 1
+    masqueGroup:AddButton(_G["TempEnchant" .. ENCHANTS_STYLED])
+    -- XXX what is the stupid white border around these?
+  end
 end
 
 local frame = CreateFrame("FRAME")
 frame:RegisterEvent("UNIT_AURA")
-frame:SetScript("OnEvent", UnitAura)
-
-
--- TODO add weapon buffs to the above, unless disabling the border matters
-local masqueWeaponBuffGroup = MSQ:Group("jBuffs", "weapon buffs")
-masqueWeaponBuffGroup:AddButton(TempEnchant1)
-masqueWeaponBuffGroup:AddButton(TempEnchant2)
--- XXX what is the stupid white border around these?
-
-oldTEB_OL = TempEnchantButton_OnLoad
-function JBuffs_TempEnchantButton_OnLoad(self)
-  oldTEB_OL(self)
-  masqueWeaponBuffBuffGroup:AddButton(self)
-end
-TempEnchantButton_OnLoad = JBuffs_TempEnchantButton_OnLoad
+frame:SetScript("OnEvent", UNIT_AURA)
 
 
 -- TODO fonts, text positioning
+-- perhaps done above
