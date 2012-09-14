@@ -36,7 +36,6 @@ local function UNIT_AURA(self, event, ...)
 
   while BUFFS_STYLED < BUFF_ACTUAL_DISPLAY do
     BUFFS_STYLED = BUFFS_STYLED + 1
-    print("BuffFrame" .. BUFFS_STYLED)
     local button = _G["BuffButton" .. BUFFS_STYLED]
     if button then
       StyleButton(button)
