@@ -27,20 +27,25 @@ DebuffFrame:SetScale(2.0)
 local MSQ = LibStub("Masque")
 local masqueGroup = MSQ:Group("jBuffs", "buffs")
 
+local function StyleButton(self)
+  masqueGroup:AddButton(self)
+  -- TODO fonts, text positioning
+end
+
 local function UNIT_AURA(self, event, ...)
   if ... ~= PlayerFrame.unit then return end
 
   while BUFFS_STYLED < BUFF_ACTUAL_DISPLAY do
     BUFFS_STYLED = BUFFS_STYLED + 1
-    masqueGroup:AddButton(_G["BuffFrame" .. BUFFS_STYLED])
+    StyleButton(_G["BuffFrame" .. BUFFS_STYLED])
   end
   while DEBUFFS_STYLED < DEBUFF_ACTUAL_DISPLAY do
     DEBUFFS_STYLED = DEBUFFS_STYLED + 1
-    masqueGroup:AddButton(_G["DebuffFrame" .. DEBUFFS_STYLED])
+    StyleButton(_G["DebuffFrame" .. DEBUFFS_STYLED])
   end
   while ENCHANTS_STYLED < BuffFrame.numEnchants do
     ENCHANTS_STYLED = ENCHANTS_STYLED + 1
-    masqueGroup:AddButton(_G["TempEnchant" .. ENCHANTS_STYLED])
+    StyleButton(_G["TempEnchant" .. ENCHANTS_STYLED])
     -- XXX what is the stupid white border around these?
   end
 end
@@ -48,7 +53,3 @@ end
 local frame = CreateFrame("FRAME")
 frame:RegisterEvent("UNIT_AURA")
 frame:SetScript("OnEvent", UNIT_AURA)
-
-
--- TODO fonts, text positioning
--- perhaps done above
