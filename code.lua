@@ -1,4 +1,8 @@
 --- Addon Globals
+-- configurable
+local FONT = "Interface\\Addons\\SharedMedia_MyMedia\\fonts\\ABF.ttf"
+local FONT_SIZE = 10
+
 local BUFFS_STYLED = 0
 local DEBUFFS_STYLED = 0
 local ENCHANTS_STYLED = 0
@@ -22,7 +26,12 @@ local function StyleButton(self)
   --print(self)
   masqueGroup:AddButton(self)
   -- TODO fonts, text positioning
+  self.duration:SetFont(FONT, FONT_SIZE)
 end
+-- XXX global for debugging
+JStyleButton = StyleButton
+-- /run JStyleButton(_G"ConsolidatedBuffs")
+-- /run LibStub("Masque"):Group("jBuffs", "buffs"):AddButton(_G"ConsolidatedBuffs")
 
 local function UNIT_AURA(self, event, ...)
   if ... ~= PlayerFrame.unit then return end  -- just our buffs
@@ -45,7 +54,9 @@ local function UNIT_AURA(self, event, ...)
     ENCHANTS_STYLED = ENCHANTS_STYLED + 1
     local button = _G["TempEnchant" .. ENCHANTS_STYLED]
     StyleButton(button)
-    button:Hide()
+    --button:Hide() -- XXX wtf is this?
+    -- remove annoying white border
+    _G["TempEnchant" .. ENCHANTS_STYLED .. "Border"]:Hide()
   end
 end
 
@@ -55,9 +66,12 @@ frame:SetScript("OnEvent", UNIT_AURA)
 
 
 --- Style consolidated buff frame when it shows.
--- XXX also apparently this messes with the icon somehow
+-- XXX it's not clear to me that this is doing anything
 hooksecurefunc("ConsolidatedBuffs_OnShow", function (...)
-  StyleButton(_G["ConsolidatedBuffs"])
+  print("ConsolidatedBuffs_OnShow")
+  StyleButton(ConsolidatedBuffs)
+  -- TODO hide the fancy border somehow
+  --ConsolidatedBuffsBorder:Hide()
 end)
 
 
