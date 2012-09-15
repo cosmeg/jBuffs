@@ -9,13 +9,15 @@ local ENCHANTS_STYLED = 0
 
 --- More buffs per row.
 BUFFS_PER_ROW = 32
+--- Move the debuff buttons up.
+-- Yea, this is a hack. It's possible that this can cause ui overlaps on the
+-- right side of the screen.
+BUFF_BUTTON_HEIGHT = 0
 
 
 --- Move buff frame to the right of the screen.
 BuffFrame:ClearAllPoints()
 BuffFrame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -13, -13)
-
--- TODO move debuffs up?
 
 
 --- Style buffs as they are created.
