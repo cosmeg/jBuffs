@@ -1,6 +1,6 @@
 --- Addon Globals
 -- configurable
-local FONT = "Interface\\Addons\\SharedMedia_MyMedia\\fonts\\ABF.ttf"
+local FONT = "Interface\\Addons\\SharedMedia_MyMedia\\fonts\\Helvetica.ttf"
 
 local BUFFS_STYLED = 0
 local DEBUFFS_STYLED = 0
