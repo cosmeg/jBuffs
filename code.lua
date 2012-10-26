@@ -8,11 +8,28 @@ local ENCHANTS_STYLED = 0
 
 
 --- More buffs per row.
-BUFFS_PER_ROW = 32
+--BUFFS_PER_ROW = 32
+--XXX this taints too
 --- Move the debuff buttons up.
 -- Yea, this is a hack. It's possible that this can cause ui overlaps on the
 -- right side of the screen.
-BUFF_BUTTON_HEIGHT = 0
+--BUFF_BUTTON_HEIGHT = 0
+-- XXX setting globals like this causes taint
+-- /dump issecurevariable("BUFFS_PER_ROW")
+-- is there a better way?
+--TODO *moving* the debuffs shouldn't cause taint
+-- hook: BuffFrame_UpdateAllBuffAnchors DebuffButton_UpdateAnchors
+local function PositionDebuffs(...)
+  local button = DebuffButton1
+  if button then
+    --print(DebuffButton1:GetPoint(1))
+    local point, relativeTo, relativePoint, xOffset, yOffset = button:GetPoint(1)
+    button:ClearAllPoints()
+    --print(yOffset)
+    button:SetPoint(point, relativeTo, relativePoint, xOffset, -30)
+  end
+end
+hooksecurefunc("DebuffButton_UpdateAnchors", PositionDebuffs)
 
 
 --- Move buff frame to the right of the screen.
