@@ -79,11 +79,5 @@ frame:RegisterEvent("UNIT_AURA")
 frame:SetScript("OnEvent", UNIT_AURA)
 
 
---- Style consolidated buff frame.
-StyleButton(ConsolidatedBuffs)
--- TODO change this. can I somehow use the existing icon?
-ConsolidatedBuffsIcon:SetTexture("Interface\\ICONS\\ACHIEVEMENT_GUILDPERK_QUICK AND DEAD")
-
-
 -- bootstrap
 UNIT_AURA(nil, "UNIT_AURA", PlayerFrame.unit)
