@@ -33,8 +33,15 @@ hooksecurefunc("DebuffButton_UpdateAnchors", PositionDebuffs)
 
 
 --- Move buff frame to the right of the screen.
-BuffFrame:ClearAllPoints()
-BuffFrame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -13, -13)
+local function PositionBuffFrame(...)
+  --print("PositionBuffFrame")
+  BuffFrame:ClearAllPoints()
+  BuffFrame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -13, -13)
+  -- /dump BuffFrame:GetPoint(1)
+end
+--hooksecurefunc("BuffFrame_OnUpdate", PositionBuffFrame)
+-- not sure what keeps moving this
+hooksecurefunc("BuffFrame_UpdateAllBuffAnchors", PositionBuffFrame)
 
 
 --- Style buffs as they are created.
@@ -42,17 +49,17 @@ BuffFrame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", -13, -13)
 local MSQ = LibStub("Masque")
 local masqueGroup = MSQ:Group("jBuffs", "buffs")
 
-local function StyleButton(self)
-  masqueGroup:AddButton(self)
-  self.duration:SetFont(FONT, 10)
-  self.count:SetFont(FONT, 16, "OUTLINE")
-  local count = self.count
+local function StyleButton(button)
+  masqueGroup:AddButton(button)
+  button.duration:SetFont(FONT, 10)
+  button.count:SetFont(FONT, 16, "OUTLINE")
+  local count = button.count
   count:ClearAllPoints()
-  count:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 0)
+  count:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 0)
 end
 
-local function UNIT_AURA(self, event, ...)
-  if ... ~= PlayerFrame.unit then return end  -- just our buffs
+local function UNIT_AURA(self, event, unitID)
+  if unitID ~= PlayerFrame.unit then return end  -- just our buffs
 
   while BUFFS_STYLED < BUFF_ACTUAL_DISPLAY do
     BUFFS_STYLED = BUFFS_STYLED + 1
@@ -64,6 +71,7 @@ local function UNIT_AURA(self, event, ...)
     local button = _G["DebuffButton" .. DEBUFFS_STYLED]
     StyleButton(button)
     button:SetScale(2.0)
+    _G["DebuffButton" .. DEBUFFS_STYLED .. "Border"]:Hide()
   end
   while ENCHANTS_STYLED < BuffFrame.numEnchants do
     ENCHANTS_STYLED = ENCHANTS_STYLED + 1
@@ -81,3 +89,4 @@ frame:SetScript("OnEvent", UNIT_AURA)
 
 -- bootstrap
 UNIT_AURA(nil, "UNIT_AURA", PlayerFrame.unit)
+PositionBuffFrame()
