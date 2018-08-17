@@ -90,3 +90,14 @@ frame:SetScript("OnEvent", UNIT_AURA)
 -- bootstrap
 UNIT_AURA(nil, "UNIT_AURA", PlayerFrame.unit)
 PositionBuffFrame()
+
+
+-- https://us.battle.net/forums/en/wow/topic/20742625126#post-2
+-- adds caster of buffs/debuffs to their tooltips
+hooksecurefunc(GameTooltip,"SetUnitAura",function(self,unit,index,filter)
+  local caster = select(7,UnitAura(unit,index,filter))
+  if caster and UnitExists(caster) then
+    GameTooltip:AddLine("Cast by: "..UnitName(caster),.65,.85,1,1)
+    GameTooltip:Show()
+  end
+end)
